@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Buku;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BukuController extends Controller
 {
@@ -21,6 +22,13 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->role === 'anggota') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk mengakses operasi ini!',
+            ], 403);
+        }
+
         $request->validate([
             'kategori_id' => 'required|exists:kategoris,id',
             'judul'       => 'required|string|max:255',
@@ -59,6 +67,13 @@ class BukuController extends Controller
     {
         $buku = Buku::find($id);
 
+        if (auth()->user()->role === 'anggota') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk mengakses operasi ini!',
+            ], 403);
+        }
+
         if (!$buku) {
             return response()->json([
                 'success' => false,
@@ -86,6 +101,13 @@ class BukuController extends Controller
     public function destroy($id)
     {
         $buku = Buku::find($id);
+
+        if (auth()->user()->role !== 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda tidak memiliki akses untuk mengakses operasi ini!',
+            ], 403);
+        }
 
         if (!$buku) {
             return response()->json([

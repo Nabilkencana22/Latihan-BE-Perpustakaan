@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Helpers\ApiResponse;
 use App\Models\Kategori;
+use Illuminate\Http\Request;
 
 class KategoriController extends Controller
 {
@@ -14,11 +15,7 @@ class KategoriController extends Controller
     {
         $semuaKategori = Kategori::all();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar kategori buku',
-            'data' => $semuaKategori,
-        ], 200);
+        return ApiResponse::success($semuaKategori, 'Daftar kategori buku', 200);
     }
 
     /**
@@ -40,10 +37,7 @@ class KategoriController extends Controller
 
         $kategori = Kategori::create($validate);
 
-        return response()->json([
-            'message' => 'Kategori berhasil ditambahkan',
-            'data' => $kategori,
-        ], 201);
+        return ApiResponse::success($kategori, 'Kategori berhasil ditambahkan', 201);
     }
 
     /**
@@ -53,15 +47,11 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::find($id);
 
-        if (!$kategori) {
-            return response()->json([
-                'message' => 'Kategori tidak ditemukan',
-            ], 404);
+        if (! $kategori) {
+            return ApiResponse::error('Kategori tidak ditemukan', 404);
         }
 
-        return response()->json([
-            'data' => $kategori,
-        ], 200);
+        return ApiResponse::success($kategori, 'Detail kategori', 200);
         //
     }
 
@@ -80,10 +70,8 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::find($id);
 
-        if (!$kategori) {
-            return response()->json([
-                'message' => 'Kategori tidak ditemukan',
-            ], 404);
+        if (! $kategori) {
+            return ApiResponse::error('Kategori tidak ditemukan', 404);
         }
 
         $validate = $request->validate([
@@ -91,13 +79,10 @@ class KategoriController extends Controller
         ]);
 
         $kategori->update([
-            'nama_kategori' => $request->nama_kategori
+            'nama_kategori' => $request->nama_kategori,
         ]);
 
-        return response()->json([
-            'message' => 'Kategori berhasil diupdate',
-            'data' => $kategori,
-        ], 200);
+        return ApiResponse::success($kategori, 'Kategori berhasil diupdate', 200);
     }
 
     /**
@@ -107,18 +92,19 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::find($id);
 
-        if(!$kategori){
+        if (auth()->user()->role !== 'admin') {
+            return ApiResponse::error('Anda tidak memiliki akses untuk mengakses operasi ini!', 403);
+        }
+
+        if (! $kategori) {
             return response()->json([
                 'message' => 'Kategori tidak ditemukan',
-                'data' => $kategori
+                'data' => $kategori,
             ]);
         }
 
         $kategori->delete();
 
-        return response()->json([
-            'message' => 'Kategori berhasil dihapus',
-            'data' => $kategori
-        ]);
+        return ApiResponse::success($kategori, 'Kategori berhasil dihapus', 200);
     }
 }

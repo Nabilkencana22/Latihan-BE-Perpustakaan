@@ -30,7 +30,7 @@ class PeminjamanController extends Controller
             'tanggal_jatuh_tempo' => 'required|date|after_or_equal:tanggal_pinjam',
         ]);
 
-        $buku = Buku::find($request->buku_id);
+        $buku = Buku::find('id',$request->buku_id);
         if ($buku->stok <= 0) {
             return response()->json([
                 'success' => false,
