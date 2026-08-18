@@ -88,11 +88,11 @@ class KategoriController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, string $role)
     {
         $kategori = Kategori::find($id);
 
-        if (auth()->user()->role !== 'admin') {
+        if (auth()->user()->role !== $role) {
             return ApiResponse::error('Anda tidak memiliki akses untuk mengakses operasi ini!', 403);
         }
 

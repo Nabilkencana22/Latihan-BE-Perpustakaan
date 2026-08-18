@@ -15,4 +15,16 @@ class ApiResponse {
             'message' => $message,
         ], $code);
     }
+
+    public static function notFound($message, $code = 404){
+        return response()->json([
+           'message' => $message 
+        ], $code);
+    }
+
+    public static function unauthorized($message, $code = 401){
+        return response()->json([
+           'message' => $message 
+        ], $code);
+    }
 }

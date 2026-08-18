@@ -29,14 +29,14 @@ class BukuController extends Controller
             ], 403);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'kategori_id' => 'required|exists:kategoris,id',
             'judul'       => 'required|string|max:255',
             'isbn'        => 'required|string|unique:bukus,isbn',
             'stok'        => 'required|integer|min:0',
         ]);
 
-        $buku = Buku::create($request->all());
+        $buku = Buku::create($validated);
 
         return response()->json([
             'success' => true,
@@ -81,14 +81,14 @@ class BukuController extends Controller
             ], 404);
         }
 
-        $request->validate([
+        $validated = $request->validate([
             'kategori_id' => 'required|exists:kategoris,id',
             'judul'       => 'required|string|max:255',
             'isbn'        => 'required|string|unique:bukus,isbn,' . $id,
             'stok'        => 'required|integer|min:0',
         ]);
 
-        $buku->update($request->all());
+        $buku->update($validated);
 
         return response()->json([
             'success' => true,
