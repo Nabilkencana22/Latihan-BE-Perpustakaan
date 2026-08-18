@@ -6,6 +6,7 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -35,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Akses khusus Admin
     Route::middleware('role:admin')->group(function () {
+        Route::apiResource('users', UserController::class);
         Route::patch('/user/{id}/role', [AuthController::class, 'updateRole']);
         Route::apiResource('kategori', KategoriController::class)->except(['index', 'show']);
         Route::apiResource('anggota', AnggotaController::class)->except(['index', 'show']);
