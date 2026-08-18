@@ -13,9 +13,11 @@ class CheckRole
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (! $request->user() || ! in_array($request->user()->role, ['admin', 'petugas'])) {
+        $allowedRoles = !empty($roles) ? $roles : ['admin', 'petugas'];
+
+        if (! $request->user() || ! in_array($request->user()->role, $allowedRoles)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Anda tidak memiliki akses untuk mengakses operasi ini!',

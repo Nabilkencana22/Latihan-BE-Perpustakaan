@@ -82,7 +82,7 @@ class AuthController extends Controller
             'role' => 'required|in:admin,petugas,anggota',
         ]);
 
-        $user = User::find('id', $id);
+        $user = User::find($id);
 
         if (!$user) {
             return response()->json([

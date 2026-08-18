@@ -75,7 +75,7 @@ class KategoriController extends Controller
         }
 
         $validate = $request->validate([
-            'nama_kategori' => 'required|string|max:50|unique:kategoris,nama_kategori',
+            'nama_kategori' => 'required|string|max:50|unique:kategoris,nama_kategori,' . $id,
         ]);
 
         $kategori->update([
@@ -88,19 +88,16 @@ class KategoriController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id, string $role)
+    public function destroy(string $id)
     {
         $kategori = Kategori::find($id);
 
-        if (auth()->user()->role !== $role) {
+        if (auth()->user()->role !== 'admin') {
             return ApiResponse::error('Anda tidak memiliki akses untuk mengakses operasi ini!', 403);
         }
 
         if (! $kategori) {
-            return response()->json([
-                'message' => 'Kategori tidak ditemukan',
-                'data' => $kategori,
-            ]);
+            return ApiResponse::error('Kategori tidak ditemukan', 404);
         }
 
         $kategori->delete();

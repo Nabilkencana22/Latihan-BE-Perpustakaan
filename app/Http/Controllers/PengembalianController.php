@@ -57,4 +57,41 @@ class PengembalianController extends Controller
             'data'    => $pengembalian->load(['peminjaman', 'petugas'])
         ], 201);
     }
+
+    public function show($id)
+    {
+        $pengembalian = Pengembalian::with(['peminjaman.anggota.user', 'peminjaman.buku', 'petugas'])->find($id);
+
+        if (!$pengembalian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pengembalian tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail data pengembalian',
+            'data'    => $pengembalian
+        ], 200);
+    }
+
+    public function destroy($id)
+    {
+        $pengembalian = Pengembalian::find($id);
+
+        if (!$pengembalian) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data pengembalian tidak ditemukan'
+            ], 404);
+        }
+
+        $pengembalian->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pengembalian berhasil dihapus'
+        ], 200);
+    }
 }
